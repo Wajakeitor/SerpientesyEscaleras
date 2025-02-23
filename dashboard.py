@@ -52,11 +52,12 @@ En este juego clásico, los jugadores deben avanzar a través de un tablero de c
 - **Escaleras**: Las escaleras te permiten avanzar rápidamente a una casilla más alta.\n\
 - **Serpientes**: Si caes en una casilla con una serpiente, retrocederás y perderás tiempo.")
 
-columnas = st.columns((1,7))
-with columnas[0]:
-    pass
-
+columnas = st.columns((1,4,4,1))
 with columnas[1]:
-    tablero = Tableros()
+    st.markdown(f"# Menú de opciones")
+
+with columnas[2]:
+    st.markdown(f"# Tablero de Juego")
+    tablero = Tableros(numeroCasillas=casillas)
     tablero.graficar()
     st.pyplot(tablero.fig)
