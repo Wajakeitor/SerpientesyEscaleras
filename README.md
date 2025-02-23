@@ -8,4 +8,4 @@ Un jueguito de serpientes y escaleras
 
 ## Prueba del programa
 Se puede usar en local, pero si no quieres esperarte o descargar los archivos, usa el link de abajo
-- Link to app: [https://serpientes-y-escaleras.streamlit.app/](Un programa chingón)
+- Link to app: [Un programa chingón](https://serpientes-y-escaleras.streamlit.app/)
