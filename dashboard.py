@@ -10,7 +10,7 @@ st.title("Serpientes y Escaleras")
 columnas = st.columns(5)
 
 with columnas[0]:
-    casillas = st.number_input("Cantidad de Casillas en el juego.", min_value=12, max_value=200, value=30, step=1)
+    casillas = st.number_input("Cantidad de Casillas en el juego.", min_value=12, max_value=80, value=30, step=1)
 
 # La cantidad de escaleras y serpientes se limita a piso(casillas / 6)
 max_escaleras_serpientes = math.floor(casillas / 6)

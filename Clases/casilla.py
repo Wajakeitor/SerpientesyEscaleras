@@ -4,7 +4,7 @@ import matplotlib.patches as patches
 class Casillas:
     """_summary_
     """    
-    def __init__(self, numero, tipoCasilla, xinicio, yinicio, largo, alto, grosor=2):
+    def __init__(self, numero, tipoCasilla, xinicio, yinicio, largo, alto, grosor=2, color = "white"):
         
         self.numero = numero
         self.tipoCasilla = tipoCasilla
@@ -13,12 +13,13 @@ class Casillas:
         self.grosor = grosor
         self.xinicio = xinicio
         self.yinicio = yinicio
+        self.color = color
 
     def graficar(self, ax):
         MarcoCasilla = patches.Rectangle(
             (self.xinicio, self.yinicio),                               # Coordenas de inicio
             self.largo, self.alto,                                      # Largo y alto de la casilla
-            edgecolor='black', facecolor='white', linewidth=self.grosor # Otras propeidades
+            edgecolor='black', facecolor=self.color, linewidth=self.grosor # Otras propiedades: Color de borde, fondo y grosor del borde
         )
         ax.add_patch(MarcoCasilla)
 
@@ -26,7 +27,7 @@ class Casillas:
         MarcoNumero = patches.Rectangle(
             (self.xinicio, self.yinicio + self.alto - MarcoNumero_Alto),
             MarcoNumero_Alto, MarcoNumero_Alto, 
-            edgecolor='black', facecolor='white', linewidth=2
+            edgecolor='black', facecolor=self.color, linewidth=2
         )
         ax.add_patch(MarcoNumero)
 
