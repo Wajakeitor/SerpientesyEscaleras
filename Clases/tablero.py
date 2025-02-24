@@ -29,6 +29,7 @@ class Tableros:
                             yinicio= 0,
                             largo= PrimerLargo + TamañoCasilla,
                             alto= TamañoCasilla,
+                            fila=0,
                             color="black")
         self.casillas.append(casilla)
 
@@ -41,7 +42,9 @@ class Tableros:
                                 numero = NumeroCasilla,
                                 xinicio= xpos,
                                 yinicio= yindice*TamañoCasilla,
-                                largo=TamañoCasilla, alto=TamañoCasilla)
+                                largo=TamañoCasilla,
+                                alto=TamañoCasilla,
+                                fila=yindice)
             self.casillas.append(casilla)
 
             if xpos + TamañoCasilla*(-1)**(yindice) < 99 and xpos + TamañoCasilla*(-1)**(yindice) > -1: # Previniendo un error de redondeo
@@ -60,6 +63,7 @@ class Tableros:
                             yinicio= yindice*TamañoCasilla,
                             largo= SegundoLargo + TamañoCasilla,
                             alto= TamañoCasilla,
+                            fila= yindice,
                             color="black")
         self.casillas.append(casilla)
 
