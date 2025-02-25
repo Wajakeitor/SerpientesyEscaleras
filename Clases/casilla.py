@@ -1,26 +1,29 @@
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
+import matplotlib.pyplot as plt #necesario para graficar el tablero
+import matplotlib.patches as patches 
+
+
+#Se establecen las clases que usaremos para definir nuestro tablero y jugadores
 
 class Casillas:
     """_summary_
     """    
     def __init__(self, numero, tipoCasilla, xinicio, yinicio, largo, alto, fila, grosor=2, color = "white"):
         
-        self.numero = numero
-        self.tipoCasilla = tipoCasilla
-        self.largo = largo
-        self.alto = alto
-        self.grosor = grosor
+        self.numero = numero #Cantidad de casillas con las que el usuario desea jugar
+        self.tipoCasilla = tipoCasilla   #puede ser blanca, con serpiente o con escalera
+        self.largo = largo  #Largo del tablero
+        self.alto = alto   #Altura del tablero
+        self.grosor = grosor 
         self.xinicio = xinicio
         self.yinicio = yinicio
         self.fila = fila
         self.color = color
 
-    def graficar(self, ax):
+    def graficar(self, ax):  #Esta fucion se encarga de graficar el tablero
         MarcoCasilla = patches.Rectangle(
-            (self.xinicio+0.1*self.largo, self.yinicio+0.1*self.alto),                               # Coordenas de inicio
+            (self.xinicio+0.1*self.largo, self.yinicio+0.1*self.alto),          # Coordenas de inicio
             self.largo*0.8, self.alto*0.8,                                      # Largo y alto de la casilla
-            edgecolor='black', facecolor=self.color, linewidth=self.grosor # Otras propiedades: Color de borde, fondo y grosor del borde
+            edgecolor='green', facecolor=self.color, linewidth=self.grosor # Otras propiedades: Color de borde, fondo y grosor del borde
         )
         ax.add_patch(MarcoCasilla)
 
