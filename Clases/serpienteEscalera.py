@@ -8,6 +8,7 @@ class SerpientesEscaleras:
         self.tipo = tipo
         self.CasillaInicio = Casillainicio
         self.CasillaFinal = Casillafinal
+        self.CasillaInicio.tipoCasilla = Casillafinal
 
     def graficar(self, ax):
         color = 'green' if self.tipo == 1 else 'red'
