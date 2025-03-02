@@ -1,21 +1,30 @@
 from Clases.casilla import Casillas
 from Clases.serpienteEscalera import SerpientesEscaleras
+from Clases.pieza import Piezas
+
 import matplotlib.pyplot as plt
 import random
 import math
 
+import time
+
 class Tableros:
-    def __init__(self, numeroCasillas, numeroSerpientes, numeroEscaleras):
+    def __init__(self, numeroCasillas, numeroSerpientes, numeroEscaleras, numeroPiezas):
+        self.CantidadCasillas = numeroCasillas + 1
         self.CantidadSerpientes = numeroSerpientes
         self.CantidadEscaleras = numeroEscaleras
+        self.CantidadPiezas = numeroPiezas
+
         self.casillas: list[Casillas] = []
         self.serpientes: list[SerpientesEscaleras] = []
         self.escaleras: list[SerpientesEscaleras] = []
+        self.piezas: list[Piezas] = []
+
         self.CasillasOcupadas: list[int] = []
-        self.CantidadCasillas = numeroCasillas + 1
         self.CasillasPorFila = math.ceil((numeroCasillas+1)**(1/2))
         self.crear_casillas()
         self.crear_serpientes_escaleras()
+        self.crear_piezas()
 
     def crear_casillas(self):
         # Calcular el ancho total ocupado y el tamaño de cada casilla
@@ -79,34 +88,37 @@ class Tableros:
     def CasillasAleatorias(self, minimo, maximo):
         CasillasNoValidas = True
         while CasillasNoValidas:
-            a = random.randint(minimo,maximo)
-            b = random.randint(minimo,maximo)
-            if a in self.CasillasOcupadas or b in self.CasillasOcupadas:
+            final = random.randint(minimo,maximo)
+            inicio = random.randint(minimo,maximo)
+            if final in self.CasillasOcupadas or inicio in self.CasillasOcupadas:
                 continue
-            if a==b:
+            if inicio==final:
                 continue
-            if a < b:
-                a, b = b, a
-            if (a-minimo)//self.CasillasPorFila != (b-minimo)//self.CasillasPorFila:
+            if final < inicio:
+                final, inicio = inicio, final
+            if (final-minimo)//self.CasillasPorFila != (inicio-minimo)//self.CasillasPorFila:
                 CasillasNoValidas = False
         
-        self.CasillasOcupadas.append(a)
-        self.CasillasOcupadas.append(b)
+        self.CasillasOcupadas.append(final)
+        self.CasillasOcupadas.append(inicio)
         
-        return a, b
+        return final, inicio
 
     def crear_serpientes_escaleras(self):
         maximo =  self.CantidadCasillas - (self.CasillasPorFila - (math.ceil( (self.CasillasPorFila**2-self.CantidadCasillas)/2)) + 1)
         minimo =  self.CasillasPorFila - (math.floor( (self.CasillasPorFila**2-self.CantidadCasillas)/2) + 1) + 1
+
         for _ in range(self.CantidadEscaleras):
-            a, b = self.CasillasAleatorias(minimo, maximo)
-            self.escaleras.append(SerpientesEscaleras(1, Casillafinal=self.casillas[a], Casillainicio=self.casillas[b]))
+            final, inicio = self.CasillasAleatorias(minimo, maximo)
+            self.escaleras.append(SerpientesEscaleras(1, Casillafinal=self.casillas[final], Casillainicio=self.casillas[inicio]))
         
         for _ in range(self.CantidadSerpientes):
-            a, b = self.CasillasAleatorias(minimo, maximo)
-            self.serpientes.append(SerpientesEscaleras(-1, Casillafinal=self.casillas[a], Casillainicio=self.casillas[b]))
+            final, inicio = self.CasillasAleatorias(minimo, maximo)
+            self.serpientes.append(SerpientesEscaleras(-1, Casillafinal=self.casillas[inicio], Casillainicio=self.casillas[final]))
         
-
+    def crear_piezas(self):
+        for i in range(self.CantidadPiezas):
+            self.piezas.append(Piezas(self.casillas[0], i+1))
 
     def graficar(self):
         fig, ax = plt.subplots(figsize=(9, 9))
@@ -115,14 +127,29 @@ class Tableros:
         ax.set_xticks([])
         ax.set_yticks([])
 
-        for serpiente in self.serpientes:
-            serpiente.graficar(ax)
-
-        for escalera in self.escaleras:
-            escalera.graficar(ax)
-
+        inicio = time.perf_counter()
         for casilla in self.casillas:
             casilla.graficar(ax)
+        fin = time.perf_counter()
+        print("Tiempo de graficación de casillas:", fin-inicio)
+
+        inicio = time.perf_counter()
+        for serpiente in self.serpientes:
+            serpiente.graficar(ax)
+        fin = time.perf_counter()
+        print("Tiempo de graficación de serpientes:", fin-inicio)
+
+        inicio = time.perf_counter()
+        for escalera in self.escaleras:
+            escalera.graficar(ax)
+        fin = time.perf_counter()
+        print("Tiempo de graficación de escaleras:", fin-inicio)
+
+        inicio = time.perf_counter()
+        for pieza in self.piezas:
+            pieza.graficar(ax)
+        fin = time.perf_counter()
+        print("Tiempo de graficación de piezas:", fin-inicio)
 
 
         self.fig = fig

@@ -2,6 +2,8 @@ import streamlit as st
 import math
 from Clases.tablero import Tableros
 
+import time
+
 # Configurar el ancho de la página
 st.set_page_config(layout="wide")
 
@@ -58,6 +60,13 @@ with columnas[1]:
 
 with columnas[2]:
     st.markdown(f"# Tablero de Juego")
-    tablero = Tableros(numeroCasillas=casillas, numeroEscaleras=escaleras, numeroSerpientes=serpientes)
+    inicio = time.perf_counter()
+    tablero = Tableros(numeroCasillas= casillas,
+                       numeroEscaleras= escaleras,
+                       numeroSerpientes= serpientes,
+                       numeroPiezas= personajes)
+    fin = time.perf_counter()
+    print("Tiempos de creación:", fin-inicio)
     tablero.graficar()
     st.pyplot(tablero.fig)
+    print(end="\n\n")
