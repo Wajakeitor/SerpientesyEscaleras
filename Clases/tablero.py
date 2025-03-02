@@ -119,6 +119,14 @@ class Tableros:
     def crear_piezas(self):
         for i in range(self.CantidadPiezas):
             self.piezas.append(Piezas(self.casillas[0], i+1))
+    
+    def avanzar_pieza(self, numeroPieza, avance):
+        pieza = self.piezas[numeroPieza]
+        posicion_actual = pieza.casilla.numero
+        nueva_posicion = min(posicion_actual + avance, self.CantidadCasillas - 1)
+        pieza.casilla = self.casillas[nueva_posicion]
+        if pieza.casilla.tipoCasilla !=0:
+            pieza.casilla = pieza.casilla.tipoCasilla
 
     def graficar(self):
         fig, ax = plt.subplots(figsize=(9, 9))
@@ -127,29 +135,17 @@ class Tableros:
         ax.set_xticks([])
         ax.set_yticks([])
 
-        inicio = time.perf_counter()
         for casilla in self.casillas:
             casilla.graficar(ax)
-        fin = time.perf_counter()
-        print("Tiempo de graficación de casillas:", fin-inicio)
 
-        inicio = time.perf_counter()
         for serpiente in self.serpientes:
             serpiente.graficar(ax)
-        fin = time.perf_counter()
-        print("Tiempo de graficación de serpientes:", fin-inicio)
 
-        inicio = time.perf_counter()
         for escalera in self.escaleras:
             escalera.graficar(ax)
-        fin = time.perf_counter()
-        print("Tiempo de graficación de escaleras:", fin-inicio)
 
-        inicio = time.perf_counter()
         for pieza in self.piezas:
             pieza.graficar(ax)
-        fin = time.perf_counter()
-        print("Tiempo de graficación de piezas:", fin-inicio)
 
 
         self.fig = fig

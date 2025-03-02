@@ -1,5 +1,8 @@
 import streamlit as st
 import math
+import random
+
+
 from Clases.tablero import Tableros
 
 import time
@@ -7,12 +10,23 @@ import time
 # Configurar el ancho de la página
 st.set_page_config(layout="wide")
 
+
+def crear_tablero():
+    st.session_state.tablero = Tableros(
+        numeroCasillas=st.session_state.casillas,
+        numeroEscaleras=st.session_state.escaleras,
+        numeroSerpientes=st.session_state.serpientes,
+        numeroPiezas=st.session_state.personajes
+    )
+
+
 st.title("Serpientes y Escaleras")
 
 columnas = st.columns(5)
 
 with columnas[0]:
-    casillas = st.number_input("Cantidad de Casillas en el juego.", min_value=12, max_value=80, value=30, step=1)
+    casillas = st.number_input("Cantidad de Casillas en el juego.",
+                               min_value=12, max_value=80, value=30, step=1, key="casillas")
 
 # La cantidad de escaleras y serpientes se limita a piso(casillas / 6)
 max_escaleras_serpientes = math.floor(casillas / 6)
@@ -28,7 +42,7 @@ with columnas[2]:
                                  step=1, key="serpientes")
 
 with columnas[3]:
-    personajes = st.number_input("Cantidad de Personajes", min_value=1, max_value=5, value=4, step=1)
+    personajes = st.number_input("Cantidad de Personajes", min_value=1, max_value=5, value=4, step=1, key="personajes")
 
 with columnas[4]:
     personajes_humanos = st.number_input("Cantidad de Personajes Humanos", min_value=1, max_value=personajes,
@@ -55,18 +69,46 @@ En este juego clásico, los jugadores deben avanzar a través de un tablero de c
 - **Serpientes**: Si caes en una casilla con una serpiente, retrocederás y perderás tiempo.")
 
 columnas = st.columns((1,4,4,1))
+if "turno" not in st.session_state:
+    st.session_state.turno = -1
 with columnas[1]:
     st.markdown(f"# Menú de opciones")
 
+    if st.button("Generar Nuevo Tablero"):
+        # Generar un nuevo tablero y guardarlo en session_state
+        st.session_state.tablero = Tableros(
+            numeroCasillas=st.session_state.casillas,
+            numeroEscaleras=st.session_state.escaleras,
+            numeroSerpientes=st.session_state.serpientes,
+            numeroPiezas=st.session_state.personajes
+        )
+        st.session_state.turno = 0
+        st.session_state.tablero.graficar()
+
+  
+    if st.button("Lanzar Dados", disabled=not (st.session_state.turno>=0 and st.session_state.turno<st.session_state.personajes_humanos)):
+        avance = random.randint(1, 6) + random.randint(1, 6)
+        st.session_state.tablero.avanzar_pieza(st.session_state.turno, avance)
+
+        st.session_state.turno = (st.session_state.turno + 1)%st.session_state.tablero.CantidadPiezas
+        st.session_state.tablero.graficar()
+
+    if st.session_state.turno >= st.session_state.personajes_humanos:
+        for i in range(st.session_state.personajes_humanos, st.session_state.tablero.CantidadPiezas):
+            avance = random.randint(1, 6) + random.randint(1, 6)
+            st.session_state.tablero.avanzar_pieza(st.session_state.turno, avance)
+        # Resetear turno a los humanos
+        st.session_state.turno = 0
+        st.session_state.tablero.graficar()
+
+
+
+
 with columnas[2]:
     st.markdown(f"# Tablero de Juego")
-    inicio = time.perf_counter()
-    tablero = Tableros(numeroCasillas= casillas,
-                       numeroEscaleras= escaleras,
-                       numeroSerpientes= serpientes,
-                       numeroPiezas= personajes)
-    fin = time.perf_counter()
-    print("Tiempos de creación:", fin-inicio)
-    tablero.graficar()
-    st.pyplot(tablero.fig)
-    print(end="\n\n")
+    try:
+        st.pyplot(st.session_state.tablero.fig)
+    except:
+        st.markdown(f"### Crea el tablero de acuerdo a las características que desees al clickear el botón: *Generar Nuevo Tablero*")
+    
+    
