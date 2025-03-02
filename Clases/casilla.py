@@ -1,7 +1,18 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-class Casillas:
+class MarcoNumero = patches.Rectangle(
+            (self.xinicio+0.1*self.largo, self.yinicio+0.9*self.alto - MarcoNumero_Alto),
+            MarcoNumero_Alto, MarcoNumero_Alto, 
+            edgecolor='black', facecolor=self.color, linewidth=2
+        )
+        ax.add_patch(MarcoNumero)
+
+        # Colocar el número de la casilla en la esquina superior izquierda
+        ax.text(self.xinicio+0.1*self.largo + MarcoNumero_Alto / 2,
+                self.yinicio+0.9*self.alto  - MarcoNumero_Alto / 2,
+                str(self.numero), color='black', ha='center', va='center')
+Casillas:
     """_summary_
     """    
     def __init__(self, numero, tipoCasilla, xinicio, yinicio, largo, alto, fila, grosor=2, color = "white", final = False, fontsize = 8): 
