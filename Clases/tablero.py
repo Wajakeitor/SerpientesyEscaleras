@@ -1,12 +1,21 @@
 from Clases.casilla import Casillas
+from Clases.serpienteEscalera import SerpientesEscaleras
 import matplotlib.pyplot as plt
+import random
 import math
 
 class Tableros:
-    def __init__(self, numeroCasillas=30):
+    def __init__(self, numeroCasillas, numeroSerpientes, numeroEscaleras):
+        self.CantidadSerpientes = numeroSerpientes
+        self.CantidadEscaleras = numeroEscaleras
+        self.casillas: list[Casillas] = []
+        self.serpientes: list[SerpientesEscaleras] = []
+        self.escaleras: list[SerpientesEscaleras] = []
+        self.CasillasOcupadas: list[int] = []
         self.CantidadCasillas = numeroCasillas + 1
         self.CasillasPorFila = math.ceil((numeroCasillas+1)**(1/2))
         self.crear_casillas()
+        self.crear_serpientes_escaleras()
 
     def crear_casillas(self):
         # Calcular el ancho total ocupado y el tamaño de cada casilla
@@ -19,10 +28,8 @@ class Tableros:
             relleno = self.CasillasPorFila**2 - self.CantidadCasillas
             PrimerLargo = math.floor(relleno/2) * TamañoCasilla
             SegundoLargo = math.ceil(relleno/2) * TamañoCasilla
-            print(relleno, PrimerLargo, SegundoLargo)
 
         # Plotear la Primer Casilla
-        self.casillas = []
         casilla = Casillas(tipoCasilla=0,
                             numero = 0,
                             xinicio= 0,
@@ -44,7 +51,8 @@ class Tableros:
                                 yinicio= yindice*TamañoCasilla,
                                 largo=TamañoCasilla,
                                 alto=TamañoCasilla,
-                                fila=yindice)
+                                fila=yindice,
+                                fontsize=20 + 12/(9-4)*(4-self.CasillasPorFila))
             self.casillas.append(casilla)
 
             if xpos + TamañoCasilla*(-1)**(yindice) < 99 and xpos + TamañoCasilla*(-1)**(yindice) > -1: # Previniendo un error de redondeo
@@ -64,8 +72,40 @@ class Tableros:
                             largo= SegundoLargo + TamañoCasilla,
                             alto= TamañoCasilla,
                             fila= yindice,
-                            color="black")
+                            color="black",
+                            final = True)
         self.casillas.append(casilla)
+
+    def CasillasAleatorias(self, minimo, maximo):
+        CasillasNoValidas = True
+        while CasillasNoValidas:
+            a = random.randint(minimo,maximo)
+            b = random.randint(minimo,maximo)
+            if a in self.CasillasOcupadas or b in self.CasillasOcupadas:
+                continue
+            if a==b:
+                continue
+            if a < b:
+                a, b = b, a
+            if (a-minimo)//self.CasillasPorFila != (b-minimo)//self.CasillasPorFila:
+                CasillasNoValidas = False
+        
+        self.CasillasOcupadas.append(a)
+        self.CasillasOcupadas.append(b)
+        
+        return a, b
+
+    def crear_serpientes_escaleras(self):
+        maximo =  self.CantidadCasillas - (self.CasillasPorFila - (math.ceil( (self.CasillasPorFila**2-self.CantidadCasillas)/2)) + 1)
+        minimo =  self.CasillasPorFila - (math.floor( (self.CasillasPorFila**2-self.CantidadCasillas)/2) + 1) + 1
+        for _ in range(self.CantidadEscaleras):
+            a, b = self.CasillasAleatorias(minimo, maximo)
+            self.escaleras.append(SerpientesEscaleras(1, Casillafinal=self.casillas[a], Casillainicio=self.casillas[b]))
+        
+        for _ in range(self.CantidadSerpientes):
+            a, b = self.CasillasAleatorias(minimo, maximo)
+            self.serpientes.append(SerpientesEscaleras(-1, Casillafinal=self.casillas[a], Casillainicio=self.casillas[b]))
+        
 
 
     def graficar(self):
@@ -75,7 +115,14 @@ class Tableros:
         ax.set_xticks([])
         ax.set_yticks([])
 
+        for serpiente in self.serpientes:
+            serpiente.graficar(ax)
+
+        for escalera in self.escaleras:
+            escalera.graficar(ax)
+
         for casilla in self.casillas:
             casilla.graficar(ax)
+
 
         self.fig = fig

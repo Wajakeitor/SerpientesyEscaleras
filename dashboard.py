@@ -58,6 +58,6 @@ with columnas[1]:
 
 with columnas[2]:
     st.markdown(f"# Tablero de Juego")
-    tablero = Tableros(numeroCasillas=casillas)
+    tablero = Tableros(numeroCasillas=casillas, numeroEscaleras=escaleras, numeroSerpientes=serpientes)
     tablero.graficar()
     st.pyplot(tablero.fig)
