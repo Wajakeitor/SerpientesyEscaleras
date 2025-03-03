@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.patches as patches
 
 from Clases.casilla import Casillas
+#Segun la cantidad de jugadores anexa una figura geometrica distinta correpondiente a cada uno
 
 def estrella(x, y, largo, alto, color, ax):
     """Dibuja una estrella de 5 puntas dentro del rectángulo definido"""

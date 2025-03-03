@@ -3,6 +3,8 @@ import matplotlib.patches as patches
 
 from Clases.casilla import Casillas
 
+#Define una casilla inicio y final dentro de las casillas
+
 class SerpientesEscaleras:
     def __init__(self, tipo, Casillainicio: Casillas, Casillafinal:Casillas):
         self.tipo = tipo

@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
+#Esta función determina una clase casilla las cuales serás usadas spara contruri el tablero y que los jugadores se muevan por ellas
 class Casillas:
     """_summary_
     """    
@@ -8,7 +9,7 @@ class Casillas:
         self.numero = numero
         self.tipoCasilla = tipoCasilla
         self.largo = largo
-        self.alto = alto
+        self.alto = alto         #Al graficarlas usaremos distintas propedades
         self.grosor = grosor
         self.xinicio = xinicio
         self.yinicio = yinicio
