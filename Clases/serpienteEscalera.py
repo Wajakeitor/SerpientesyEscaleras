@@ -3,14 +3,11 @@ import matplotlib.patches as patches
 
 from Clases.casilla import Casillas
 
-#Define una casilla inicio y final dentro de las casillas
-
 class SerpientesEscaleras:
     def __init__(self, tipo, Casillainicio: Casillas, Casillafinal:Casillas):
         self.tipo = tipo
         self.CasillaInicio = Casillainicio
         self.CasillaFinal = Casillafinal
-        self.CasillaInicio.tipoCasilla = Casillafinal
 
     def graficar(self, ax):
         color = 'green' if self.tipo == 1 else 'red'

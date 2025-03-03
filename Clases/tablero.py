@@ -21,10 +21,13 @@ class Tableros:
         self.piezas: list[Piezas] = []
 
         self.CasillasOcupadas: list[int] = []
-        self.CasillasPorFila = math.ceil((numeroCasillas+1)**(1/2))
+        self.CasillasPorFila = math.ceil((numeroCasillas + 1) ** (1 / 2))
         self.crear_casillas()
         self.crear_serpientes_escaleras()
         self.crear_piezas()
+
+        self.juego_terminado = False
+        self.turno_actual = 0  # Índice del jugador actual
 
     def crear_casillas(self):
         # Calcular el ancho total ocupado y el tamaño de cada casilla
@@ -119,14 +122,91 @@ class Tableros:
     def crear_piezas(self):
         for i in range(self.CantidadPiezas):
             self.piezas.append(Piezas(self.casillas[0], i+1))
-    
-    def avanzar_pieza(self, numeroPieza, avance):
-        pieza = self.piezas[numeroPieza]
-        posicion_actual = pieza.casilla.numero
-        nueva_posicion = min(posicion_actual + avance, self.CantidadCasillas - 1)
-        pieza.casilla = self.casillas[nueva_posicion]
-        if pieza.casilla.tipoCasilla !=0:
-            pieza.casilla = pieza.casilla.tipoCasilla
+
+    def graficar(self):
+        fig, ax = plt.subplots(figsize=(6, 6))  # Reducir el tamaño de la figura
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+        ax.set_xticks([])
+        ax.set_yticks([])
+
+        for casilla in self.casillas:
+            casilla.graficar(ax)
+
+        for serpiente in self.serpientes:
+            serpiente.graficar(ax)
+
+        for escalera in self.escaleras:
+            escalera.graficar(ax)
+
+        for pieza in self.piezas:
+            pieza.graficar(ax)
+
+        self.fig = fig
+
+############## LÓGICA DEL JUEGO ##############
+
+    def lanzar_dado(self):
+        """Simula el lanzamiento de un dado (número aleatorio entre 1 y 6)."""
+        return random.randint(1, 6)
+
+    def mover_pieza(self, pieza, pasos):
+        """
+        Mueve una pieza en el tablero y verifica si cae en una serpiente o escalera.
+        Devuelve True si el jugador ha ganado, False en caso contrario.
+        """
+        # Obtener la posición actual de la pieza
+        casilla_actual = pieza.casilla
+        numero_casilla_actual = casilla_actual.numero
+
+        # Calcular la nueva casilla
+        nueva_casilla_numero = numero_casilla_actual + pasos
+
+        # Verificar si el jugador ha ganado
+        if nueva_casilla_numero >= self.CantidadCasillas - 1:
+            nueva_casilla_numero = self.CantidadCasillas - 1
+            self.juego_terminado = True
+            return f"¡El jugador {pieza.Figura} ha ganado!"
+
+        # Obtener la nueva casilla
+        nueva_casilla = self.casillas[nueva_casilla_numero]
+        pieza.casilla = nueva_casilla
+
+        # Verificar si la nueva casilla tiene una serpiente o escalera
+        mensaje = ""
+        for serpiente in self.serpientes:
+            if serpiente.CasillaInicio.numero == nueva_casilla_numero:
+                pieza.casilla = serpiente.CasillaFinal
+                mensaje = f"¡El jugador {pieza.Figura} ha caído en una serpiente!"
+                break
+
+        for escalera in self.escaleras:
+            if escalera.CasillaInicio.numero == nueva_casilla_numero:
+                pieza.casilla = escalera.CasillaFinal
+                mensaje = f"¡El jugador {pieza.Figura} ha subido por una escalera!"
+                break
+
+        return mensaje
+
+    def jugar_turno(self):
+        """
+        Simula el turno del jugador actual.
+        Devuelve un mensaje con el resultado del turno.
+        """
+        if self.juego_terminado:
+            return "El juego ha terminado."
+
+        pieza = self.piezas[self.turno_actual]
+        pasos = self.lanzar_dado()
+        mensaje = f"El jugador {pieza.Figura} ha lanzado un {pasos}.\n"
+
+        resultado = self.mover_pieza(pieza, pasos)
+        mensaje += resultado
+
+        # Pasar al siguiente jugador
+        self.turno_actual = (self.turno_actual + 1) % self.CantidadPiezas
+
+        return mensaje
 
     def graficar(self):
         fig, ax = plt.subplots(figsize=(9, 9))
@@ -146,6 +226,5 @@ class Tableros:
 
         for pieza in self.piezas:
             pieza.graficar(ax)
-
 
         self.fig = fig
